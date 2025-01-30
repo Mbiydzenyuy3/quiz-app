@@ -1,37 +1,25 @@
-
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
+import { useQuiz } from "../context/QuizContext";
 
-export default function QuizPage({
-  questions,
-  fetchQuestions,
-  onQuizComplete,
-  timePerQuestion = 30,
-}) {
+export default function QuizPage({ onQuizComplete }) {
+  const { questions, fetchQuestions } = useQuiz();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [userAnswers, setUserAnswers] = useState([]);
-  const [timeLeft, setTimeLeft] = useState(timePerQuestion);
 
   useEffect(() => {
-    if (questions.length === 0) {
-      fetchQuestions();
-    }
-  }, [questions, fetchQuestions]);
-
- 
+    fetchQuestions();
+  });
 
   function handleAnswer(answer) {
     const newUserAnswers = [...userAnswers, answer];
     setUserAnswers(newUserAnswers);
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
-      setTimeLeft(timePerQuestion);
     } else {
       onQuizComplete(newUserAnswers);
     }
   }
-
-  if (questions.length === 0) return <div>Loading...</div>;
 
   return (
     <div>
@@ -40,16 +28,12 @@ export default function QuizPage({
           <div className="question-item">
             <h2>Question {currentQuestion + 1}</h2>
             <p>{questions[currentQuestion].question}</p>
-            <p className="timer">Time left: {timeLeft}s</p>
           </div>
           <div className="buttons">
-            <button className="answer-btn" onClick={() => handleAnswer("True")}>
+            <button className="answer-btn" onClick={() => handleAnswer(true)}>
               True
             </button>
-            <button
-              className="answer-btn"
-              onClick={() => handleAnswer("False")}
-            >
+            <button className="answer-btn" onClick={() => handleAnswer(false)}>
               False
             </button>
           </div>
@@ -60,8 +44,6 @@ export default function QuizPage({
 }
 
 QuizPage.propTypes = {
-  questions: PropTypes.array.isRequired,
-  fetchQuestions: PropTypes.func.isRequired,
-  onQuizComplete: PropTypes.func.isRequired,
+  onQuizComplete: PropTypes.func,
   timePerQuestion: PropTypes.number,
 };

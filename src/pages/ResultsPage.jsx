@@ -1,7 +1,6 @@
-
 import { useLocation, useNavigate } from "react-router-dom";
 
-export default function Result() {
+export default function ResultsPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const { questions, userAnswers } = location.state;

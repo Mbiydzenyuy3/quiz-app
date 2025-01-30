@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-export default function Home() {
+export default function HomePage() {
   const navigate = useNavigate();
 
   const startGame = () => {
@@ -11,8 +11,8 @@ export default function Home() {
       <div className="container">
         <div className="content">
           <h1>
-            Welcome to <span className="color-text">MEL </span>True or False
-            <span className="color-text">QUIZ </span>
+            Welcome to <span className="color-text"> MELs </span> True or False
+            <span className="color-text"> QUIZ </span>
           </h1>
           <p>Take the quiz to stimulate your brain.</p>
 

@@ -1,25 +1,14 @@
-import React, { createContext, useState } from "react";
+import { createContext, useContext } from "react";
 
-export const QuizContext = createContext();
+const QuizContext = createContext();
+export default QuizContext;
 
-export function QuizProvider({ children }) {
-  const [questions, setQuestions] = useState([]);
-  const [userAnswers, setUserAnswers] = useState([]);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+export const useQuiz = () => {
+  const context = useContext(QuizContext);
 
-  return (
-    <QuizContext.Provider
-      value={{
-        questions,
-        setQuestions,
-        userAnswers,
-        setUserAnswers,
-        currentQuestion,
-        setCurrentQuestion,
-      }}
-    >
-      {children}
-    </QuizContext.Provider>
-  );
-}
+  if (context === undefined) {
+    throw new Error("useQuiz must be used within the QuizProvider");
+  }
 
+  return context; // {questions, setQuestions, currentQuestion, setCurrentQuestion, ...}
+};
