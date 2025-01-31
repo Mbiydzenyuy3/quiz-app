@@ -1,49 +1,43 @@
-import PropTypes from "prop-types";
-import { useState, useEffect } from "react";
-import { useQuiz } from "../context/QuizContext";
+import QuestionCard from "../components/QuizCard";
+import { useState, useContext, useEffect } from "react";
+import { QuizContext } from "../context/QuizContext";
+import { useNavigate } from "react-router";
+import { useParams } from "react-router";
 
-export default function QuizPage({ onQuizComplete }) {
-  const { questions, fetchQuestions } = useQuiz();
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [userAnswers, setUserAnswers] = useState([]);
+export default function QuizQuestions() {
+  const { number: num } = useParams();
+  const number = parseInt(num, 10);
+  const [time, setTime] = useState(20);
+  const { tabQuestions, setTabReponse, tabReponse } = useContext(QuizContext);
+  const navigate = useNavigate();
+
+  const handleNext = (question, response) => {
+    setTime(20);
+    const newQuestion = { ...question, yours: response };
+    setTabReponse([...tabReponse, newQuestion]);
+    if (number === 10) {
+      return navigate("/ScorePage");
+    }
+    navigate(`/QuizQuestions/${number + 1}`);
+  };
 
   useEffect(() => {
-    fetchQuestions();
-  });
-
-  function handleAnswer(answer) {
-    const newUserAnswers = [...userAnswers, answer];
-    setUserAnswers(newUserAnswers);
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
-      onQuizComplete(newUserAnswers);
+    if (time > 0) {
+      setTimeout(() => {
+        setTime(time - 1);
+      }, 1000);
+    } else if (time === 0) {
+      handleNext(tabQuestions[number], "");
     }
-  }
+  }, [time]);
 
   return (
-    <div>
-      <div className="main-wrapper">
-        <div className="question-container">
-          <div className="question-item">
-            <h2>Question {currentQuestion + 1}</h2>
-            <p>{questions[currentQuestion].question}</p>
-          </div>
-          <div className="buttons">
-            <button className="answer-btn" onClick={() => handleAnswer(true)}>
-              True
-            </button>
-            <button className="answer-btn" onClick={() => handleAnswer(false)}>
-              False
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <QuestionCard
+      next={handleNext}
+      question={tabQuestions[number - 1]}
+      totalQuestion={tabQuestions.length}
+      number={number}
+      time={time}
+    />
   );
 }
-
-QuizPage.propTypes = {
-  onQuizComplete: PropTypes.func,
-  timePerQuestion: PropTypes.number,
-};

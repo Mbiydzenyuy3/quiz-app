@@ -1,29 +1,22 @@
-// import { useEffect, useState } from "react";
-import { Route, Routes, BrowserRouter } from "react-router-dom";
-import QuizContext from "./context/QuizContext";
+import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router";
 import HomePage from "./pages/HomePage";
-import QuizPage from "./pages/QuizPage";
-import ResultsPage from "./pages/ResultsPage";
-import { useState } from "react";
+import QuizQuestions from "./pages/QuizPage";
+import ResultPage from "./pages/ResultsPage";
+import { UseData } from "./context/QuizContext";
 
 export default function App() {
-  const { questions, setQuestions } = useState();
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-
   return (
-    <QuizContext.Provider
-      value={(questions, setQuestions, currentQuestion, setCurrentQuestion)}
-    >
-      <BrowserRouter>
-        <div className="app-container">
-          <h1></h1>
+    <div className="app-container">
+      <UseData>
+        <BrowserRouter>
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/quiz" element={<QuizPage />} />
-            <Route path="/results" element={<ResultsPage />} />
+            <Route path="/QuizQuestions/:number" element={<QuizQuestions />} />
+            <Route path="/ScorePage" element={<ResultPage />} />
           </Routes>
-        </div>
-      </BrowserRouter>
-    </QuizContext.Provider>
+        </BrowserRouter>
+      </UseData>
+    </div>
   );
 }
